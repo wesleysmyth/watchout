@@ -47,7 +47,7 @@ var makeEnemies = function(n) {
 
   return enemies;
 }
-makeEnemies(100);
+makeEnemies(10);
 
 
 //every second part
@@ -104,6 +104,7 @@ setInterval(function(){
 var addPlayer = function() {
   var radius = 25;
   var inData = [{x: boardWidth/2, y: boardHeight/2, r:25}];
+  gameBoard.playerRadius = radius;
 
   var drag = d3.behavior.drag()
    .on('dragstart', function() { circle.style('fill', 'red'); })
@@ -129,17 +130,66 @@ addPlayer();
 //investiage the api for drag for this
 //investigate api for collisions
 //investigate the source code for the example game
-var enemyChecks = d3.selectAll('.enemies').data();
-// console.dir(enemyChecks);
-//
-var coordinatesArr = [];
+
+// create coordinates object to store player coordinates
+var coordinatesObj = {};
+
 var playerCoordinates = function() {
   d3.selectAll(".player").each( function(d, i){
-    coordinatesArr.push(d3.select(this).attr("cx"));
+    coordinatesObj.x = d3.select(this).attr("cx");
+    coordinatesObj.y = d3.select(this).attr("cy");
   });
 };
-playerCoordinates();
-console.log(coordinatesArr);
+
+// buffer to take into account the size of the enemies and the player
+var buffer = gameBoard.playerRadius + gameBoard.enemyHeight / 2;
+
+var recentlyCollided = 0;
+
+// setInterval checks for collisions every 50 milliseconds
+setInterval(function(){
+  playerCoordinates();
+  d3.selectAll('.enemies').each(function(d){
+    if(recentlyCollided === 0) {
+      if(Math.abs(d3.select(this).attr('x') - coordinatesObj.x) < buffer){
+        if (Math.abs(d3.select(this).attr('y') - coordinatesObj.y) < buffer){
+          d3.select('.player').style('fill', 'green');
+          document.getElementById('collisionsCount').innerHTML++;
+          recentlyCollided++;
+          setTimeout(function() {
+            d3.select('.player').style('fill', 'black');
+            recentlyCollided--;
+          },1000);
+        }
+      }
+    }
+  });
+}, 50);
+
+
+// increment the counters appropriately
+// style it
+// extra credit: two player game
+// refactor to pseudoclassical for the player
+// web sockets for multiplayer
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //keep track of the score
 //keep a counter that keeps incrementing by the number of dots each second
