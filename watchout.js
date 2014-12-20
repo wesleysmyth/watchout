@@ -30,24 +30,24 @@ var makeEnemies = function(n) {
   }
 
   var enemies = gameBoard.
-  selectAll('image').
-  data(randomPositions).
-  enter().
-  append('svg:image').
-  attr('xlink:href', 'asteroid.png').
-  attr('height',gameBoard.enemyHeight + 'px').
-  attr('width',gameBoard.enemyWidth + 'px').
-  attr('class', 'enemies').
-  style('opacity',0).
-  attr('x', function(d) {return d[0];}).
-  attr('y', function(d) {return d[1];}).
-  transition().
-  duration(1500).
-  style('opacity',1);
+    selectAll('image').
+    data(randomPositions).
+    enter().
+    append('svg:image').
+    attr('xlink:href', 'asteroid.png').
+    attr('height',gameBoard.enemyHeight + 'px').
+    attr('width',gameBoard.enemyWidth + 'px').
+    attr('class', 'enemies').
+    style('opacity',0).
+    attr('x', function(d) {return d[0];}).
+    attr('y', function(d) {return d[1];}).
+    transition().
+    duration(1500).
+    style('opacity',1);
 
   return enemies;
 }
-makeEnemies(10);
+makeEnemies(100);
 
 
 //every second part
@@ -75,17 +75,19 @@ var moveAround = function() {
   }
 
   gameBoard.
-  selectAll('.enemies').
-  data(randomPositions).
-  transition().
-  duration(5000).
-  attr('x', function(d){ return d[0]}).
-  attr('y', function(d){ return d[1]});
+    selectAll('.enemies').
+    data(randomPositions).
+    transition().
+    duration(5000).
+    attr('x', function(d){ return d[0]}).
+    attr('y', function(d){ return d[1]});
 
 };
+
 setTimeout(function(){
   moveAround();
 }, 1100);
+
 setInterval(function(){
   moveAround();
 }, 5500);
@@ -99,70 +101,45 @@ setInterval(function(){
 
 //opportunity to refactor to pseudoclassical instantiation pattern to create new instances of players
 
-var addPlayer2 = function() {
+var addPlayer = function() {
   var radius = 25;
   var inData = [{x: boardWidth/2, y: boardHeight/2, r:25}];
 
   var drag = d3.behavior.drag()
-               .on('dragstart', function() { circle.style('fill', 'red'); })
-               .on('drag', function() { circle.attr('cx', d3.event.x)
-                                              .attr('cy', d3.event.y); })
-               .on('dragend', function() { circle.style('fill', 'black'); });
+   .on('dragstart', function() { circle.style('fill', 'red'); })
+   .on('drag', function() { circle.attr('cx', d3.event.x)
+                                  .attr('cy', d3.event.y); })
+   .on('dragend', function() { circle.style('fill', 'black'); });
 
- var circle = gameBoard.selectAll('.draggableCircle')
-                 .data(inData)
-                 .enter()
-                 .append('svg:circle')
-                 .attr('class', 'draggableCircle')
-                 .attr('cx', function(d) { return d.x; })
-                 .attr('cy', function(d) { return d.y; })
-                 .attr('r', function(d) { return d.r; })
-                 .call(drag)
-                 .style('fill', 'black');
+ var circle = gameBoard.selectAll('.player')
+   .data(inData)
+   .enter()
+   .append('svg:circle')
+   .attr('class', 'player')
+   .attr('cx', function(d) { return d.x; })
+   .attr('cy', function(d) { return d.y; })
+   .attr('r', function(d) { return d.r; })
+   .call(drag)
+   .style('fill', 'black');
 }
-addPlayer2();
+addPlayer();
 
-
-
-
-
-
-
-//this doesn't quite work.
-// var addPlayer = function() {
-//   var radius = 25;
-//   var inData = [{x: boardWidth/2, y: boardHeight/2 - 200}];
-//   var drag1 = d3.behavior.drag()
-//       .origin(function(d) { return d } )
-//       .on('drag', dragmove);
-
-//   gameBoard
-//       .selectAll('circle')
-//       .data(inData)
-//       .enter()
-//       .append("circle")
-//       .style('opacity',0)
-//       .attr("cx", function(d) {return d.x })
-//       .attr("cy", function(d) {return d.y })
-//       .attr("r", radius)
-//       .transition()
-//       .duration(1500)
-//       .style('opacity',1)
-//       .call(drag1);
-
-//   function dragmove(d) {
-//     d3.select(this)
-//         .attr("cx", d.x = Math.max(radius, Math.min(boardWidth - radius, d3.event.x)))
-//         .attr("cy", d.y = Math.max(radius, Math.min(boardHeight - radius, d3.event.y)));
-//   }
-// }
-// addPlayer();
 
 //detect when an enemy touches you.
 //investiage the api for drag for this
 //investigate api for collisions
 //investigate the source code for the example game
-
+var enemyChecks = d3.selectAll('.enemies').data();
+// console.dir(enemyChecks);
+//
+var coordinatesArr = [];
+var playerCoordinates = function() {
+  d3.selectAll(".player").each( function(d, i){
+    coordinatesArr.push(d3.select(this).attr("cx"));
+  });
+};
+playerCoordinates();
+console.log(coordinatesArr);
 
 //keep track of the score
 //keep a counter that keeps incrementing by the number of dots each second
