@@ -5,6 +5,7 @@
 var boardHeight = screen.height - 180;
 var boardWidth = screen.width - 40;
 var gameBoard = d3.select('body').append('svg:svg')
+                .attr('class','gameBoard')
                 .attr('width', boardWidth)
                 .attr('height', boardHeight);
 
@@ -46,7 +47,7 @@ var makeEnemies = function(n) {
 
   return enemies;
 }
-makeEnemies(100);
+makeEnemies(10);
 
 
 //every second part
@@ -64,7 +65,7 @@ makeEnemies(100);
 //use a .transition in there
 
 var moveAround = function() {
-
+  //modularize randomPositions
   var randomPositions = [];
   for (var i = 0; i < gameBoard.n; i++) {
     var xy = [];
@@ -95,6 +96,67 @@ setInterval(function(){
 // create a node for the player dot. is it html or svg?
 //   g node? investigate.
 //make sure we can use images in that node
+
+//opportunity to refactor to pseudoclassical instantiation pattern to create new instances of players
+
+var addPlayer2 = function() {
+  var radius = 25;
+  var inData = [{x: boardWidth/2, y: boardHeight/2, r:25}];
+
+  var drag = d3.behavior.drag()
+               .on('dragstart', function() { circle.style('fill', 'red'); })
+               .on('drag', function() { circle.attr('cx', d3.event.x)
+                                              .attr('cy', d3.event.y); })
+               .on('dragend', function() { circle.style('fill', 'black'); });
+
+ var circle = gameBoard.selectAll('.draggableCircle')
+                 .data(inData)
+                 .enter()
+                 .append('svg:circle')
+                 .attr('class', 'draggableCircle')
+                 .attr('cx', function(d) { return d.x; })
+                 .attr('cy', function(d) { return d.y; })
+                 .attr('r', function(d) { return d.r; })
+                 .call(drag)
+                 .style('fill', 'black');
+}
+addPlayer2();
+
+
+
+
+
+
+
+//this doesn't quite work.
+// var addPlayer = function() {
+//   var radius = 25;
+//   var inData = [{x: boardWidth/2, y: boardHeight/2 - 200}];
+//   var drag1 = d3.behavior.drag()
+//       .origin(function(d) { return d } )
+//       .on('drag', dragmove);
+
+//   gameBoard
+//       .selectAll('circle')
+//       .data(inData)
+//       .enter()
+//       .append("circle")
+//       .style('opacity',0)
+//       .attr("cx", function(d) {return d.x })
+//       .attr("cy", function(d) {return d.y })
+//       .attr("r", radius)
+//       .transition()
+//       .duration(1500)
+//       .style('opacity',1)
+//       .call(drag1);
+
+//   function dragmove(d) {
+//     d3.select(this)
+//         .attr("cx", d.x = Math.max(radius, Math.min(boardWidth - radius, d3.event.x)))
+//         .attr("cy", d.y = Math.max(radius, Math.min(boardHeight - radius, d3.event.y)));
+//   }
+// }
+// addPlayer();
 
 //detect when an enemy touches you.
 //investiage the api for drag for this
