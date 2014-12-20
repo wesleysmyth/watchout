@@ -12,41 +12,41 @@ var gameBoard = d3.select('body').append('svg:svg')
 //make enemies as img nodes pointing them to the asteroid.png
 // or in d3: set the source attribute equal to the path for the png file
 
-// var makeEnemies = function(n) {
-//   gameBoard.enemyHeight = 25;
-//   gameBoard.enemyWidth = 25;
-//   gameBoard.n = n;
-//   //create an array of random positions
-//   //this will be the actual data that we pass in
-//   //figure out whether to use attribute or style to set the position
-//   //create the random positions arr
-//   var randomPositions = [];
-//   for (var i = 0; i < n; i++) {
-//     var xy = [];
-//     xy.push(Math.random()*(boardWidth-gameBoard.enemyWidth));
-//     xy.push(Math.random()*(boardHeight-gameBoard.enemyHeight));
-//     randomPositions.push(xy);
-//   }
+var makeEnemies = function(n) {
+  gameBoard.enemyHeight = 25;
+  gameBoard.enemyWidth = 25;
+  gameBoard.n = n;
+  //create an array of random positions
+  //this will be the actual data that we pass in
+  //figure out whether to use attribute or style to set the position
+  //create the random positions arr
+  var randomPositions = [];
+  for (var i = 0; i < n; i++) {
+    var xy = [];
+    xy.push(Math.random()*(boardWidth-gameBoard.enemyWidth));
+    xy.push(Math.random()*(boardHeight-gameBoard.enemyHeight));
+    randomPositions.push(xy);
+  }
 
-//   var enemies = gameBoard.
-//   selectAll('image').
-//   data(randomPositions).
-//   enter().
-//   append('svg:image').
-//   attr('xlink:href', 'asteroid.png').
-//   attr('height',gameBoard.enemyHeight + 'px').
-//   attr('width',gameBoard.enemyWidth + 'px').
-//   attr('class', 'enemies').
-//   style('opacity',0).
-//   attr('x', function(d) {return d[0];}).
-//   attr('y', function(d) {return d[1];}).
-//   transition().
-//   duration(1500).
-//   style('opacity',1);
+  var enemies = gameBoard.
+  selectAll('image').
+  data(randomPositions).
+  enter().
+  append('svg:image').
+  attr('xlink:href', 'asteroid.png').
+  attr('height',gameBoard.enemyHeight + 'px').
+  attr('width',gameBoard.enemyWidth + 'px').
+  attr('class', 'enemies').
+  style('opacity',0).
+  attr('x', function(d) {return d[0];}).
+  attr('y', function(d) {return d[1];}).
+  transition().
+  duration(1500).
+  style('opacity',1);
 
-//   return enemies;
-// }
-// makeEnemies(100);
+  return enemies;
+}
+makeEnemies(100);
 //setTimeout(function() {return makeEnemies(15);},3000);
 
 //every second part
