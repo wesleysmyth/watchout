@@ -1,5 +1,6 @@
 // start slingin' some d3 here.
 
+
 //draw a box that is an svg element
 //append svg to dom
 var boardHeight = screen.height - 180;
@@ -196,36 +197,10 @@ setInterval(function(){
   });
 }, 10);
 
-// keep track of current score
-// score will increase by number of enemies on screen
-// will increase once every setInterval period
-
-
 
 // style it
 // extra credit: two player game
 // refactor to pseudoclassical for the player
 // web sockets for multiplayer
 //
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//keep track of the score
-//keep a counter that keeps incrementing by the number of dots each second
-//we can maybe make this a transition() to slow the number rather than incrementing by the number of dots each second
 
