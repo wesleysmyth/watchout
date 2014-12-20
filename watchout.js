@@ -47,7 +47,7 @@ var makeEnemies = function(n) {
   return enemies;
 }
 makeEnemies(100);
-//setTimeout(function() {return makeEnemies(15);},3000);
+
 
 //every second part
 //select all the svg images
@@ -63,31 +63,31 @@ makeEnemies(100);
 //can use a style() to set the position too
 //use a .transition in there
 
-// var moveAround = function() {
+var moveAround = function() {
 
-//   var randomPositions = [];
-//   for (var i = 0; i < gameBoard.n; i++) {
-//     var xy = [];
-//     xy.push(Math.random()*(boardWidth-gameBoard.enemyWidth));
-//     xy.push(Math.random()*(boardHeight-gameBoard.enemyHeight));
-//     randomPositions.push(xy);
-//   }
+  var randomPositions = [];
+  for (var i = 0; i < gameBoard.n; i++) {
+    var xy = [];
+    xy.push(Math.random()*(boardWidth-gameBoard.enemyWidth));
+    xy.push(Math.random()*(boardHeight-gameBoard.enemyHeight));
+    randomPositions.push(xy);
+  }
 
-//   gameBoard.
-//   selectAll('.enemies').
-//   data(randomPositions).
-//   transition().
-//   duration(5000).
-//   attr('x', function(d){ return d[0]}).
-//   attr('y', function(d){ return d[1]});
+  gameBoard.
+  selectAll('.enemies').
+  data(randomPositions).
+  transition().
+  duration(5000).
+  attr('x', function(d){ return d[0]}).
+  attr('y', function(d){ return d[1]});
 
-// };
-// setTimeout(function(){
-//   moveAround();
-// }, 1100);
-// setInterval(function(){
-//   moveAround();
-// }, 5500);
+};
+setTimeout(function(){
+  moveAround();
+}, 1100);
+setInterval(function(){
+  moveAround();
+}, 5500);
 
 
 //create a differently colored dot for the player
