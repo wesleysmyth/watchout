@@ -9,6 +9,7 @@ var gameBoard = d3.select('body').append('svg:svg')
                 .attr('width', boardWidth)
                 .attr('height', boardHeight);
 
+gameBoard.moveTime = 5500;
 
 //make enemies as img nodes pointing them to the asteroid.png
 // or in d3: set the source attribute equal to the path for the png file
@@ -47,7 +48,7 @@ var makeEnemies = function(n) {
 
   return enemies;
 }
-makeEnemies(10);
+makeEnemies(100);
 
 
 //every second part
@@ -82,15 +83,28 @@ var moveAround = function() {
     attr('x', function(d){ return d[0]}).
     attr('y', function(d){ return d[1]});
 
+  // document.getElementById('currentScore').innerHTML = currentScore;
 };
 
+// initialize enemy movement after enemies have faded in
 setTimeout(function(){
   moveAround();
-}, 1100);
+  // keep enemies moving every gameBoard.moveTime milliseconds
+  setInterval(function(){
+    moveAround();
+  }, gameBoard.moveTime);
+}, 1501);
 
 setInterval(function(){
-  moveAround();
-}, 5500);
+  currentScore += 1;
+  d3.select('#currentScore').
+  data([currentScore]).
+  transition().
+  duration(gameBoard.moveTime).
+  text(function(d) {
+    return d;
+  });
+}, gameBoard.moveTime/gameBoard.n);
 
 
 //create a differently colored dot for the player
@@ -145,17 +159,33 @@ var playerCoordinates = function() {
 var buffer = gameBoard.playerRadius + gameBoard.enemyHeight / 2;
 
 var recentlyCollided = 0;
+var collisionsCount = 0;
+var currentScore = 0;
+var highScore = 0;
 
 // setInterval checks for collisions every 50 milliseconds
 setInterval(function(){
+  // find where player is on gameBoard
   playerCoordinates();
+  //select all the enemies and determine whether or not they have the same coordinates as the player (collision)
   d3.selectAll('.enemies').each(function(d){
+    // make the player invincible if a collision has recently occured
     if(recentlyCollided === 0) {
       if(Math.abs(d3.select(this).attr('x') - coordinatesObj.x) < buffer){
+        // only need to check y coordinates if x coordinates are within the buffer range
         if (Math.abs(d3.select(this).attr('y') - coordinatesObj.y) < buffer){
-          d3.select('.player').style('fill', 'green');
-          document.getElementById('collisionsCount').innerHTML++;
           recentlyCollided++;
+          // change player's color while invincible
+          d3.select('.player').style('fill', 'green');
+          collisionsCount++;
+          // update collisionsCount on the DOM
+          document.getElementById('collisionsCount').innerHTML = collisionsCount;
+          if (currentScore > highScore) {
+            highScore = currentScore;
+            document.getElementById('highScore').innerHTML = highScore;
+          }
+          currentScore = 0;
+          // reset player vulnerability
           setTimeout(function() {
             d3.select('.player').style('fill', 'black');
             recentlyCollided--;
@@ -164,10 +194,14 @@ setInterval(function(){
       }
     }
   });
-}, 50);
+}, 10);
+
+// keep track of current score
+// score will increase by number of enemies on screen
+// will increase once every setInterval period
 
 
-// increment the counters appropriately
+
 // style it
 // extra credit: two player game
 // refactor to pseudoclassical for the player
