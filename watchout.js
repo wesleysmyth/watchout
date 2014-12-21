@@ -117,10 +117,15 @@ setInterval(function(){
 //make sure we can use images in that node
 
 //opportunity to refactor to pseudoclassical instantiation pattern to create new instances of players
+var playersCoordinates = [];
 
-var addPlayer = function() {
+var addPlayer = function(numOfPlayers) {
   var radius = 25;
-  var inData = [{x: boardWidth/2, y: boardHeight/2, r:25}];
+  var inData = [];
+  for(var i = 0; i < numOfPlayers; i++) {
+    inData.push({x: boardWidth/2 + i*50, y: boardHeight/2 + i*50, r:25});
+    playersCoordinates.push({});
+  }
   gameBoard.playerRadius = radius;
 
   var drag = d3.behavior.drag()
@@ -140,7 +145,8 @@ var addPlayer = function() {
    .call(drag)
    .style('fill', 'black');
 }
-addPlayer();
+var player1 = addPlayer(1);
+var player2;
 
 
 //detect when an enemy touches you.
@@ -149,12 +155,11 @@ addPlayer();
 //investigate the source code for the example game
 
 // create coordinates object to store player coordinates
-var coordinatesObj = {};
 
-var playerCoordinates = function() {
+var getPlayerCoordinates = function() {
   d3.selectAll(".player").each( function(d, i){
-    coordinatesObj.x = d3.select(this).attr("cx");
-    coordinatesObj.y = d3.select(this).attr("cy");
+    playersCoordinates[i].x = d3.select(this).attr("cx");
+    playersCoordinates[i].y = d3.select(this).attr("cy");
   });
 };
 
@@ -169,33 +174,42 @@ var highScore = 0;
 // setInterval checks for collisions every 50 milliseconds
 setInterval(function(){
   // find where player is on gameBoard
-  playerCoordinates();
+  getPlayerCoordinates();
   //select all the enemies and determine whether or not they have the same coordinates as the player (collision)
   d3.selectAll('.enemies').each(function(d){
-    // make the player invincible if a collision has recently occured
+    //checks to see if the player is already invincible from a recent collision
     if(recentlyCollided === 0) {
-      if(Math.abs(d3.select(this).attr('x') - coordinatesObj.x) < buffer){
-        // only need to check y coordinates if x coordinates are within the buffer range
-        if (Math.abs(d3.select(this).attr('y') - coordinatesObj.y) < buffer){
-          recentlyCollided++;
-          // change player's color while invincible
-          d3.select('.player').style('fill', 'green');
-          collisionsCount++;
-          // update collisionsCount on the DOM
-          document.getElementById('collisionsCount').innerHTML = collisionsCount;
-          if (currentScore > highScore) {
-            highScore = currentScore;
-            document.getElementById('highScore').innerHTML = highScore;
+      //if the player is vulnerable, check for new collisions against all existing players
+      var newCollision = false;
+      for(var k = 0; k < playersCoordinates.length; k++) {
+        if(Math.abs(d3.select(this).attr('x') - playersCoordinates[k].x) < buffer) {
+          // only need to check y coordinates if x coordinates are within the buffer range
+          if(Math.abs(d3.select(this).attr('y') - playersCoordinates[k].y) < buffer) {
+            newCollision = true;
           }
-          // send data to Firebase
-          myDataRef.push({highScore: highScore, collisionsCount: collisionsCount});
-          currentScore = 0;
-          // reset player vulnerability
-          setTimeout(function() {
-            d3.select('.player').style('fill', 'black');
-            recentlyCollided--;
-          },1000);
         }
+      }
+
+      if(newCollision) {
+        // make the player invincible if a collision has recently occured
+        recentlyCollided++;
+        // change player's color while invincible
+        d3.select('.player').style('fill', 'green');
+        collisionsCount++;
+        // update collisionsCount on the DOM
+        document.getElementById('collisionsCount').innerHTML = collisionsCount;
+        if (currentScore > highScore) {
+          highScore = currentScore;
+          document.getElementById('highScore').innerHTML = highScore;
+        }
+        // send data to Firebase
+        myDataRef.push({highScore: highScore, collisionsCount: collisionsCount});
+        currentScore = 0;
+        // reset player vulnerability
+        setTimeout(function() {
+          d3.select('.player').style('fill', 'black');
+          recentlyCollided--;
+        },1000);
       }
     }
   });
@@ -212,9 +226,15 @@ myDataRef.on('child_added', function(snapshot) {
   document.getElementById('highScore').innerHTML = highScore;
 });
 
-d3.select('button').on('click', function() {
+d3.select('#reset').on('click', function() {
   myDataRef.remove();
   myDataRef.push({highScore: 0, collisionsCount: 0});
+});
+
+//next level: fade out button and fade in new button saying switch back to solo mode
+d3.select('#twoPlayers').on('click', function() {
+  console.log('clicked a button');
+  player2 = addPlayer(2);
 });
 
 
