@@ -216,7 +216,7 @@ setInterval(function(){
       }
     }
   });
-  // myDataRef.push(enemyPositions);
+  myDataRef.push(enemyPositions);
 }, 10);
 
 //get new data from the server
@@ -251,13 +251,6 @@ d3.select('#twoPlayers').on('click', function() {
 //the slave machine will update the positions of all enemies and Player1 on the slave machine's gameBoard
 //slave machine will send it's Player2 position to the server
 //the master machine will get player2 position information from the server and update the master machine's gameBoard
-
-//one of the players doesn't turn green when invincible
-//we need to figure out how to push two different things to firebase: 1. scores, 2. positions
-//one option is just to push to an entirely different database. i can create one and we can push to that for positions, and we can push to wes's for scores
-//another option is to figure out how to push to two different things on the same firebase database
-//either way, i think we want to set, not push. at which point we'd have to do on_update, rather than on_add_child
-
 
 
 

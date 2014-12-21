@@ -2,12 +2,30 @@
 
 /* Note: an asteroid image is included in this repo.
 Feel free to use it if you like. */
-
+/*
 svg {
   border:5px solid black;
-}
+}*/
 
 img {
   border:10px solid orange;
   border-radius:10px;
+}
+body {
+  background-image: url(qGm4M.png);
+  background-color: #fafafa;
+  color: white;
+}
+.scoreboard {
+  background-color: black;
+  width: 200px;
+  padding: 10px;
+  border-radius: 3px;
+  font-family: Verdana;
+  position: absolute;
+  top: 10px;
+}
+
+button {
+  float: right;
 }
