@@ -2,22 +2,16 @@
 <html>
   <head>
     <link rel='stylesheet' type='css' href='styles.css'>
+    <script src='https://cdn.firebase.com/js/client/2.0.4/firebase.js'></script>
   </head>
   <body>
+  <button>Bring on a new enemy horde!</button>
     <div class="scoreboard">
       <!-- Modify the scoreboard when important events occur in your game! -->
       <div class="high">High score: <span id="highScore">0</span></div>
       <div class="current">Current score: <span id="currentScore">0</span></div>
       <div class="collisions">Collisions: <span id="collisionsCount">0</span></div>
     </div>
-    <script src="node_modules/socket.io/node_modules/socket.io-client/socket.io.js"></script>
-    <script>
-      var socket = io('http://localhost');
-      socket.on('news', function (data) {
-        console.log(data);
-        socket.emit('my other event', { my: 'data' });
-      });
-    </script>
     <script src="d3.js" charset="utf-8"></script>
     <script src='watchout.js'></script>
   </body>

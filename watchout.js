@@ -1,5 +1,7 @@
 // start slingin' some d3 here.
-
+//
+// adds new instance of Firebase linked to our database URL
+var myDataRef = new Firebase('https://boiling-heat-6275.firebaseio.com');
 
 //draw a box that is an svg element
 //append svg to dom
@@ -185,6 +187,8 @@ setInterval(function(){
             highScore = currentScore;
             document.getElementById('highScore').innerHTML = highScore;
           }
+          // send data to Firebase
+          myDataRef.push({highScore: highScore, collisionsCount: collisionsCount});
           currentScore = 0;
           // reset player vulnerability
           setTimeout(function() {
@@ -196,6 +200,22 @@ setInterval(function(){
     }
   });
 }, 10);
+
+myDataRef.on('child_added', function(snapshot) {
+  // capture snapshot object
+  var updates = snapshot.val();
+  console.log(updates);
+  // set collisionsCount and highScore equal to the values passed in on the snapshot
+  collisionsCount = updates.collisionsCount;
+  highScore = updates.highScore;
+  document.getElementById('collisionsCount').innerHTML = collisionsCount;
+  document.getElementById('highScore').innerHTML = highScore;
+});
+
+d3.select('button').on('click', function() {
+  myDataRef.remove();
+  myDataRef.push({highScore: 0, collisionsCount: 0});
+});
 
 
 // style it
